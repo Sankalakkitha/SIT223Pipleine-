@@ -47,10 +47,8 @@ pipeline{
                 // //AWS CLI            
                 echo"Deploy the code to the production  environment "
             }
-            post{
-                success{
-    post {
-        always {
+        post {
+            always {
             script {
                 currentBuild.result = currentBuild.result ?: 'SUCCESS'
             }
@@ -72,10 +70,6 @@ pipeline{
             echo 'Build failed!'
         }
     }
-
-                }
-
-            }
 
         }
         stage("Test 1"){
