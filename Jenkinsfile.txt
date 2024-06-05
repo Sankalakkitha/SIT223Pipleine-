@@ -47,18 +47,26 @@ pipeline{
                 // //AWS CLI            
                 echo"Deploy the code to the production  environment "
             }
-            post{
-                success{
-                    emailtext(
-                        to:"sanka.mapalagama@gmail.com",
-                        subject:"Jenkin Build:${currentBuild.fullDisplayName}",
-                        body:"""<p>Stage 'Stage Name' status ${currentBuild.result}</p>
-                        <p>check console output  at ${env.BUILD_URL}</p>""",
-                        attachLog:true
-
-                    )
-                }
+    post {
+        always {
+            script {
+                currentBuild.result = currentBuild.result ?: 'SUCCESS'
             }
+            emailext(
+                to: 'sanka.mapalagama@gmail.com',
+                subject: "Jenkins Pipeline - ${currentBuild.fullDisplayName} - ${currentBuild.result}",
+                body: """<p>Build Result: ${currentBuild.result}</p>
+                         <p>Build URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>""",
+                attachLog:true,
+                mimeType: 'text/html'
+            )
+        }
+        success {
+            echo 'Build was successful!'
+        }
+        failure {
+            echo 'Build failed!'
+        }
 
         }
         stage("Test 1"){
